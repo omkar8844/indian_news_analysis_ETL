@@ -1,0 +1,10 @@
+pandas
+feedparser
+duckdb
+minio
+polars
+s3fs
+transformers
+python-dotenv
+dagster
+dagster-webserver
