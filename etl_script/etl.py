@@ -1,8 +1,6 @@
 import requests
 import pandas as pd
-import xml.etree.ElementTree as ET
 import feedparser
-from bs4 import BeautifulSoup
 from datetime import datetime
 import json
 import time
@@ -14,12 +12,20 @@ import ast
 import polars as pl
 import s3fs
 from transformers import pipeline
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+minio_endpoint = os.getenv("MINIO_ENDPOINT")
+minio_access_key = os.getenv("MINIO_ACCESS_KEY")
+minio_secret_key = os.getenv("MINIO_SECRET_KEY")
+
 
 def extract_rss_feed_data(url,name):
     client = Minio(
     "localhost:9000",          # MinIO server URL
-    access_key="admin",        # Your MinIO access key
-    secret_key="omkarPawar",   # Your MinIO secret key
+    access_key=minio_access_key,        # Your MinIO access key
+    secret_key=minio_secret_key,   # Your MinIO secret key
     secure=False               # Change to True if using HTTPS
     )
     headers = {
@@ -59,8 +65,8 @@ def save_parquet_partition(df,path):
                 object_name,
                 engine="pyarrow",
                 storage_options={
-                        "key":"admin",
-                        "secret":"omkarPawar",
+                        "key":minio_access_key,
+                        "secret":minio_secret_key,
                         "client_kwargs": {"endpoint_url": "http://localhost:9000"}
                 }
         )
@@ -81,8 +87,8 @@ def load_rrs_data_in_bronze():
 
     client = Minio(
     "localhost:9000",          # MinIO server URL
-    access_key="admin",        # Your MinIO access key
-    secret_key="omkarPawar",   # Your MinIO secret key
+    access_key=minio_access_key,        # Your MinIO access key
+    secret_key=minio_secret_key,   # Your MinIO secret key
     secure=False               # Change to True if using HTTPS
     )
     con = duckdb.connect()
@@ -158,8 +164,8 @@ def transform_df_silver(df):
 def load_to_silver():
     client = Minio(
     "localhost:9000",          
-    access_key="admin",        
-    secret_key="omkarPawar",   
+    access_key=minio_access_key,        
+    secret_key=minio_secret_key,   
     secure=False               
     )
     con = duckdb.connect()
@@ -255,15 +261,15 @@ def load_to_gold():
     """)
     client = Minio(
     "localhost:9000",          # MinIO server URL
-    access_key="admin",        # Your MinIO access key
-    secret_key="omkarPawar",   # Your MinIO secret key
+    access_key=minio_access_key,        # Your MinIO access key
+    secret_key=minio_secret_key,   # Your MinIO secret key
     secure=False               # Change to True if using HTTPS
     )
     silver_path="s3://news-data-silver"
     gold_path="s3://news-data-gold"
     fs = s3fs.S3FileSystem(
-        key="admin",
-        secret="omkarPawar",
+        key=minio_access_key,
+        secret=minio_secret_key,
         client_kwargs={"endpoint_url": "http://localhost:9000"}
     )
     files = [
@@ -293,8 +299,8 @@ def load_to_gold():
             new_df2.write_parquet(
                 f"{gold_path}/load_date={today_str}/part_{ts}.parquet",
                 storage_options={
-                    "AWS_ACCESS_KEY_ID": "admin",
-                    "AWS_SECRET_ACCESS_KEY": "omkarPawar",
+                    "AWS_ACCESS_KEY_ID": minio_access_key,
+                    "AWS_SECRET_ACCESS_KEY": minio_secret_key,
                     "AWS_REGION": "us-east-1",
                     "AWS_ENDPOINT_URL": "http://localhost:9000"
             }
@@ -308,8 +314,8 @@ def load_to_gold():
         new_df.write_parquet(
             f"{gold_path}/load_date={today_str}/part_{ts}.parquet",
             storage_options={
-                "AWS_ACCESS_KEY_ID": "admin",
-                "AWS_SECRET_ACCESS_KEY": "omkarPawar",
+                "AWS_ACCESS_KEY_ID": minio_access_key,
+                "AWS_SECRET_ACCESS_KEY": minio_secret_key,
                 "AWS_REGION": "us-east-1",
                 "AWS_ENDPOINT_URL": "http://localhost:9000"
         }
