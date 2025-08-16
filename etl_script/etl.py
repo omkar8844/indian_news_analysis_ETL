@@ -60,7 +60,7 @@ def extract_rss_feed_data(url,name):
 def save_parquet_partition(df,path):
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         object_name=f"{path}/part_{ts}.parquet"
-        df=df.drop_duplicates("unique_id",keep='first')
+        #df=df.drop_duplicates("unique_id",keep='first')
         df.to_parquet(
                 object_name,
                 engine="pyarrow",
@@ -136,12 +136,12 @@ def load_rrs_data_in_bronze():
 
 
 def transform_df_silver(df):
-    df["pub_date"]=pd.to_datetime(df['published'],utc=True,format='mixed')
+    df["pub_date"]=pd.to_datetime(df['published'],format='mixed')
     df['load_date']=pd.to_datetime(df['load_date'])
     df['load_date_time']=pd.to_datetime(df['load_date_time'])
-    df['pub_time']=df['pub_date'].dt.time
-    df=df.drop(columns='published')
+    #df['pub_time']=df['pub_date'].dt.time
     df.loc[df['tags'].isna(),'tags']='No Tag'
+    
     try:
         def extract_terms_split(x):
             if pd.isna(x):
@@ -227,6 +227,28 @@ def load_to_silver():
 
 
 def transform_to_gold(df):
+    # df = df.with_columns([
+    #     pl.col("published")
+    #     .str.strptime(pl.Datetime, format=None, strict=False)   # published is string → datetime
+    #     .dt.convert_time_zone("UTC")
+    #     .alias("pub_date"),
+
+    #     pl.col("load_date")
+    #     .cast(pl.Date)   # already datetime → cast to Date
+    #     .alias("load_date"),
+
+    #     pl.col("load_date_time")
+    #     .cast(pl.Datetime)   # already datetime → keep as Datetime
+    #     .alias("load_date_time"),
+    # ])
+
+    # extract only time from pub_date
+    # df = df.with_columns(
+    #     df["pub_date"].dt.time().alias("pub_time")
+    # )
+
+# drop original 'published' column
+
     df = df.with_columns(
         pl.when(
             (pl.col("summary") == "") | pl.col("summary").str.contains("href")
@@ -247,6 +269,7 @@ def transform_to_gold(df):
             "score": [i["score"] for i in results]
         })
     )
+    df=df.to_pandas()
     return df
 
 def load_to_gold():
@@ -277,47 +300,53 @@ def load_to_gold():
         for path in fs.glob("news-data-silver/*/*.parquet")
     ]
     today_str=datetime.now().strftime("%Y-%m-%d")
-    df=pl.concat(
-        [pl.read_parquet(fs.open(file)) for file in files]
-    )
+
     file_exist=any(client.list_objects('news-data-gold', prefix=f"", recursive=True))
     if file_exist:
         print("Files exist in gold")
         new_df=con.execute(
             f""" 
                     SELECT * FROM 
-                    df 
+                    READ_PARQUET('{silver_path}/*/*.parquet') 
                     where unique_id not in (SELECT unique_id FROM
                                             READ_PARQUET('{gold_path}/*/*.parquet')    )
             """
             ).fetch_df()
         if not new_df.empty:
             new_df = pl.from_pandas(new_df)
-            print(f"{len(new_df)} rows selected from {len(df)} rows")
             new_df2=transform_to_gold(new_df)
             ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-            new_df2.write_parquet(
-                f"{gold_path}/load_date={today_str}/part_{ts}.parquet",
-                storage_options={
-                    "AWS_ACCESS_KEY_ID": minio_access_key,
-                    "AWS_SECRET_ACCESS_KEY": minio_secret_key,
-                    "AWS_REGION": "us-east-1",
-                    "AWS_ENDPOINT_URL": "http://localhost:9000"
-            }
-            )   
+            save_parquet_partition(df=new_df2,path=f"{gold_path}/transform_date={today_str}")
+            # new_df2.write_parquet(
+            #     f"{gold_path}/load_date={today_str}/part_{ts}.parquet",
+            #     storage_options={
+            #         "AWS_ACCESS_KEY_ID": minio_access_key,
+            #         "AWS_SECRET_ACCESS_KEY": minio_secret_key,
+            #         "AWS_REGION": "us-east-1",
+            #         "AWS_ENDPOINT_URL": "http://localhost:9000"
+            # }
+            # )   
         else:
             print("No new data")
     else:
+        df=con.execute(
+            f""" 
+                    SELECT * FROM 
+                    READ_PARQUET('{silver_path}/*/*.parquet')
+            """
+            ).fetch_df()
+        df = pl.from_pandas(df)
         print(f"No Data exist in gold storage,loading {len(df)} rows")
         new_df=transform_to_gold(df)
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        new_df.write_parquet(
-            f"{gold_path}/load_date={today_str}/part_{ts}.parquet",
-            storage_options={
-                "AWS_ACCESS_KEY_ID": minio_access_key,
-                "AWS_SECRET_ACCESS_KEY": minio_secret_key,
-                "AWS_REGION": "us-east-1",
-                "AWS_ENDPOINT_URL": "http://localhost:9000"
-        }
-    )
+        save_parquet_partition(df=new_df,path=f"{gold_path}/transform_date={today_str}")
+    #     new_df.write_parquet(
+    #         f"{gold_path}/load_date={today_str}/part_{ts}.parquet",
+    #         storage_options={
+    #             "AWS_ACCESS_KEY_ID": minio_access_key,
+    #             "AWS_SECRET_ACCESS_KEY": minio_secret_key,
+    #             "AWS_REGION": "us-east-1",
+    #             "AWS_ENDPOINT_URL": "http://localhost:9000"
+    #     }
+    # )
     con.close()
