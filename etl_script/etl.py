@@ -23,10 +23,10 @@ minio_secret_key = os.getenv("MINIO_SECRET_KEY")
 
 def extract_rss_feed_data(url,name):
     client = Minio(
-    "localhost:9000",          # MinIO server URL
-    access_key=minio_access_key,        # Your MinIO access key
-    secret_key=minio_secret_key,   # Your MinIO secret key
-    secure=False               # Change to True if using HTTPS
+    "localhost:9000",          
+    access_key=minio_access_key,        
+    secret_key=minio_secret_key,   
+    secure=False               
     )
     headers = {
     "User-Agent": "MyRSSReader/1.0 (+https://my_project_site_student_learning.com/contact_omkarpawar4488@gmail.com)"
@@ -60,7 +60,7 @@ def extract_rss_feed_data(url,name):
 def save_parquet_partition(df,path):
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         object_name=f"{path}/part_{ts}.parquet"
-        #df=df.drop_duplicates("unique_id",keep='first')
+        df=df.drop_duplicates("unique_id",keep='first')
         df.to_parquet(
                 object_name,
                 engine="pyarrow",
@@ -86,10 +86,10 @@ def load_rrs_data_in_bronze():
         }
 
     client = Minio(
-    "localhost:9000",          # MinIO server URL
-    access_key=minio_access_key,        # Your MinIO access key
-    secret_key=minio_secret_key,   # Your MinIO secret key
-    secure=False               # Change to True if using HTTPS
+    "localhost:9000",          
+    access_key=minio_access_key,        
+    secret_key=minio_secret_key,   
+    secure=False               
     )
     con = duckdb.connect()
     con.execute("""
@@ -283,10 +283,10 @@ def load_to_gold():
         SET s3_use_ssl=false;
     """)
     client = Minio(
-    "localhost:9000",          # MinIO server URL
-    access_key=minio_access_key,        # Your MinIO access key
-    secret_key=minio_secret_key,   # Your MinIO secret key
-    secure=False               # Change to True if using HTTPS
+    "localhost:9000",          
+    access_key=minio_access_key,        
+    secret_key=minio_secret_key,   
+    secure=False               
     )
     silver_path="s3://news-data-silver"
     gold_path="s3://news-data-gold"
