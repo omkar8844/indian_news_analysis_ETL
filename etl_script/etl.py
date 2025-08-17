@@ -116,7 +116,7 @@ def load_rrs_data_in_bronze():
                     FROM df
                     WHERE unique_id NOT IN (
                         SELECT unique_id
-                        FROM read_parquet('{base_path}/load_date={today_str}/source={i}/*.parquet')
+                        FROM read_parquet('{base_path}/*/*/*.parquet')
                     )
                     """).fetch_df()
             
