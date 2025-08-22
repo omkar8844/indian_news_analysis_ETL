@@ -2,3 +2,6 @@
 .env.*
 /.postgres_data
 postgres_data/
+.tmp_dagster_home_g6pdh28r
+.tmp_dagster_home_lojs48yw
+.tmp_dagster_home_3glg3okr

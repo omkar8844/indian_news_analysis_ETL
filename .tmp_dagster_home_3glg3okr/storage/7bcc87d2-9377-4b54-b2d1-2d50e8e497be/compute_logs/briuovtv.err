@@ -1,9 +1,0 @@
-[32m2025-08-22 14:30:14 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29161 - LOGS_CAPTURED - Started capturing logs in process (pid: 29161).
-[32m2025-08-22 14:30:14 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29161 - silver - STEP_START - Started execution of step "silver".
-/Users/omkar/Documents/my_projects/dagster_schedule/news-etl-analytics/etl_script/etl.py:141: FutureWarning: In a future version of pandas, parsing datetimes with mixed time zones will raise an error unless `utc=True`. Please specify `utc=True` to opt in to the new behaviour and silence this warning. To create a `Series` with mixed offsets and `object` dtype, please use `apply` and `datetime.datetime.strptime`
-  df["pub_date"]=pd.to_datetime(df['published'],format='mixed')
-[32m2025-08-22 14:30:14 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29161 - silver - STEP_OUTPUT - Yielded output "result" of type "Any". (Type check passed).
-[32m2025-08-22 14:30:14 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - silver - Writing file at: /Users/omkar/Documents/my_projects/dagster_schedule/news-etl-analytics/.tmp_dagster_home_3glg3okr/storage/silver using PickledObjectFilesystemIOManager...
-[32m2025-08-22 14:30:14 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29161 - silver - ASSET_MATERIALIZATION - Materialized value silver.
-[32m2025-08-22 14:30:14 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29161 - silver - HANDLED_OUTPUT - Handled output "result" using IO manager "io_manager"
-[32m2025-08-22 14:30:14 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29161 - silver - STEP_SUCCESS - Finished execution of step "silver" in 323ms.

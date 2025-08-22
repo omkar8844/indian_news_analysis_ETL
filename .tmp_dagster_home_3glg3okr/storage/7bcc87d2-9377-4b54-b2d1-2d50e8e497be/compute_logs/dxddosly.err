@@ -1,7 +1,0 @@
-[32m2025-08-22 14:30:07 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29131 - LOGS_CAPTURED - Started capturing logs in process (pid: 29131).
-[32m2025-08-22 14:30:07 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29131 - bronze - STEP_START - Started execution of step "bronze".
-[32m2025-08-22 14:30:11 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29131 - bronze - STEP_OUTPUT - Yielded output "result" of type "Any". (Type check passed).
-[32m2025-08-22 14:30:11 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - bronze - Writing file at: /Users/omkar/Documents/my_projects/dagster_schedule/news-etl-analytics/.tmp_dagster_home_3glg3okr/storage/bronze using PickledObjectFilesystemIOManager...
-[32m2025-08-22 14:30:11 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29131 - bronze - ASSET_MATERIALIZATION - Materialized value bronze.
-[32m2025-08-22 14:30:11 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29131 - bronze - HANDLED_OUTPUT - Handled output "result" using IO manager "io_manager"
-[32m2025-08-22 14:30:11 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29131 - bronze - STEP_SUCCESS - Finished execution of step "bronze" in 3.87s.

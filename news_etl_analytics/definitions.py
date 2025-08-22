@@ -14,6 +14,6 @@ etl_schedule = ScheduleDefinition(
 
 
 defs = Definitions(
-    assets=[assets.bronze, assets.silver, assets.gold],
+    assets=[assets.bronze, assets.silver, assets.gold, assets.postgres],
     schedules=[etl_schedule],
 )
