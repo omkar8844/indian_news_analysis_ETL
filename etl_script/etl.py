@@ -14,6 +14,8 @@ import s3fs
 from transformers import pipeline
 from dotenv import load_dotenv
 import os
+import psycopg2
+from sqlalchemy import create_engine,inspect
 load_dotenv()
 
 minio_endpoint = os.getenv("MINIO_ENDPOINT")
@@ -350,3 +352,74 @@ def load_to_gold():
     #     }
     # )
     con.close()
+def load_to_postgres():
+    con = duckdb.connect()
+    con.execute("SET timezone = 'Asia/Kolkata';")
+    con.execute("""
+        SET s3_region='us-east-1';
+        SET s3_endpoint='localhost:9000';
+        SET s3_access_key_id='admin';
+        SET s3_secret_access_key='omkarPawar';
+        SET s3_url_style='path';
+        SET s3_use_ssl=false;
+    """)
+    gold_path="s3://news-data-gold"
+    # engine = create_engine("postgresql://admin:omkarPawar@host:5430/postgres")
+    engine = create_engine("postgresql://admin:omkarPawar@localhost:5432/postgres")
+    inspector = inspect(engine)
+    post_conn = psycopg2.connect(
+        dbname="postgres",
+        user="admin",
+        password="omkarPawar",
+        host="localhost",
+        port="5432"
+    )
+    cur = post_conn.cursor()
+    cur.execute("""
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_name = 'news_data'
+        );
+    """)
+    exists=cur.fetchone()[0]
+    if exists:
+        print("Table already exist")
+        uids=pd.read_sql("SELECT unique_id FROM news_data", engine)
+        uid_list = tuple(uids["unique_id"].dropna().astype(str))
+        df=con.execute(
+        f""" 
+                
+                SELECT * FROM READ_PARQUET('{gold_path}/*/*.parquet') 
+                WHERE unique_id not in {uid_list}
+        """
+    ).fetch_df()
+        print(len(df))
+        if not df.empty:
+            df['pubDate']=df['pub_date'].dt.date
+            for i in ['tags','id','published']:
+                try:
+                    df=df.drop(columns=i)
+                except:
+                    pass
+            print(f"loaded {len(df)} rows in postgreSql")
+        else:
+            print("No data to append")
+
+    else:
+        print("Table does not exist")
+        df=con.execute( 
+        f""" 
+                
+                SELECT * FROM READ_PARQUET('{gold_path}/*/*.parquet')
+        """
+    ).fetch_df()
+        df['pubDate']=df['pub_date'].dt.date
+        df=df.drop(columns=['tags','id','published'])
+        df.to_sql("news_data", engine, if_exists="replace", index=False)
+        print(f"loaded {len(df)} rows in postgreSql")
+    cur.close()
+# load_rrs_data_in_bronze()
+# load_to_silver()
+# load_to_gold()
+# load_to_postgres()
