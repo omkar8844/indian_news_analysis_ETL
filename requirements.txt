@@ -8,3 +8,5 @@ transformers
 python-dotenv
 dagster
 dagster-webserver
+psycopg2
+sqlalchemy 
