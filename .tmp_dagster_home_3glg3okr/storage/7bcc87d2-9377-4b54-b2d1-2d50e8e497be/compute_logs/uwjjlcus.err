@@ -1,0 +1,8 @@
+[32m2025-08-22 14:30:16 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29171 - LOGS_CAPTURED - Started capturing logs in process (pid: 29171).
+[32m2025-08-22 14:30:16 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29171 - gold - STEP_START - Started execution of step "gold".
+Device set to use mps:0
+[32m2025-08-22 14:30:20 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29171 - gold - STEP_OUTPUT - Yielded output "result" of type "Any". (Type check passed).
+[32m2025-08-22 14:30:20 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - gold - Writing file at: /Users/omkar/Documents/my_projects/dagster_schedule/news-etl-analytics/.tmp_dagster_home_3glg3okr/storage/gold using PickledObjectFilesystemIOManager...
+[32m2025-08-22 14:30:20 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29171 - gold - ASSET_MATERIALIZATION - Materialized value gold.
+[32m2025-08-22 14:30:20 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29171 - gold - HANDLED_OUTPUT - Handled output "result" using IO manager "io_manager"
+[32m2025-08-22 14:30:20 +0530[0m - dagster - [34mDEBUG[0m - etl_job - 7bcc87d2-9377-4b54-b2d1-2d50e8e497be - 29171 - gold - STEP_SUCCESS - Finished execution of step "gold" in 3.35s.
