@@ -383,6 +383,7 @@ def load_to_postgres():
         );
     """)
     exists=cur.fetchone()[0]
+    print(f"************{exists}*********\n*******\n")
     if exists:
         print("Table already exist")
         uids=pd.read_sql("SELECT unique_id FROM news_data", engine)
@@ -403,6 +404,7 @@ def load_to_postgres():
                 except:
                     pass
             print(f"loaded {len(df)} rows in postgreSql")
+            df.to_sql("news_data", engine, if_exists="append", index=False)
         else:
             print("No data to append")
 
