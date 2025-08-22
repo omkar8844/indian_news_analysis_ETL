@@ -8,7 +8,7 @@ etl_job = define_asset_job("etl_job", selection="*")
 
 etl_schedule = ScheduleDefinition(
     job=etl_job,
-    cron_schedule="30 10-22 * * *",  # Valid cron expression
+    cron_schedule="0,30 10-22 * * *",  # Valid cron expression
     execution_timezone="Asia/Kolkata"
 )
 
