@@ -1,5 +1,5 @@
 from dagster import asset
-from etl_script.etl import load_rrs_data_in_bronze, load_to_silver, load_to_gold
+from etl_script.etl import load_rrs_data_in_bronze, load_to_silver, load_to_gold,load_to_postgres
 
 
 @asset
@@ -15,3 +15,7 @@ def silver():
 @asset(deps=[silver])
 def gold():
     load_to_gold()
+
+@asset(deps=[gold])
+def postgres():
+    load_to_postgres()

@@ -1,0 +1,39 @@
+Data exist in bronze storage
+Processing Hindustan_Time RSS feed
+100 rows extracted
+No new rows to append
+Processing Times_of_India RSS feed
+46 rows extracted
+No new rows to append
+Processing The_Hindu RSS feed
+100 rows extracted
+Out of 100 row 4 rows selected
+4 rows appended
+Processing Indian_Express RSS feed
+200 rows extracted
+Out of 200 row 1 rows selected
+1 rows appended
+Processing India_Today RSS feed
+124 rows extracted
+Out of 124 row 5 rows selected
+5 rows appended
+Processing NDTV RSS feed
+20 rows extracted
+No new rows to append
+Processing News_18 RSS feed
+199 rows extracted
+Out of 199 row 1 rows selected
+1 rows appended
+Processing Firstpost RSS feed
+200 rows extracted
+Out of 200 row 1 rows selected
+1 rows appended
+Processing DNA RSS feed
+20 rows extracted
+No new rows to append
+Processing Scroll RSS feed
+100 rows extracted
+No new rows to append
+Processing Op_India RSS feed
+10 rows extracted
+No new rows to append
