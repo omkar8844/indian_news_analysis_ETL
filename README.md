@@ -99,8 +99,8 @@ psycopg2-binary
 
 ```ini
 MINIO_ENDPOINT=localhost:9000
-MINIO_ACCESS_KEY=admin
-MINIO_SECRET_KEY=omkarPawar
+MINIO_ACCESS_KEY=username
+MINIO_SECRET_KEY=securepassowr
 # Example Postgres URI (adjust host/port/db)
 POSTGRES_URI=postgresql://admin:omkarPawar@localhost:5432/postgres
 ```
@@ -210,28 +210,34 @@ from dagster import job, op, ScheduleDefinition
 from etl import load_rrs_data_in_bronze, load_to_silver, load_to_gold, load_to_postgres
 
 @op
-def bronze_op():
+def bronze():
     load_rrs_data_in_bronze()
 
 @op
-def silver_op():
+def silver():
     load_to_silver()
 
 @op
-def gold_op():
+def gold():
     load_to_gold()
 
 @op
-def postgres_op():
+def postgres():
     load_to_postgres()
 
-@job
-def rss_sentiment_job():
-    bronze_op() >> silver_op() >> gold_op() >> postgres_op()
+ #Create a job from all assets
+etl_job = define_asset_job("etl_job", selection="*")
 
-rss_sentiment_schedule = ScheduleDefinition(
-    job=rss_sentiment_job,
-    cron_schedule="*/30 * * * *",  # every 30 minutes
+etl_schedule = ScheduleDefinition(
+    job=etl_job,
+    cron_schedule="0,30 10-22 * * *",  # Valid cron expression
+    execution_timezone="Asia/Kolkata"
+)
+
+
+defs = Definitions(
+    assets=[assets.bronze, assets.silver, assets.gold, assets.postgres],
+    schedules=[etl_schedule],
 )
 ```
 
@@ -350,3 +356,4 @@ PY
 ## License / data usage
 
 This project consumes publicly available RSS feeds for educational purposes. Review each source’s terms of use before redistribution.
+
