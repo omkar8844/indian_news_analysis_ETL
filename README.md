@@ -1,4 +1,5 @@
 # News Sentiment Analysis – End‑to‑End Data Engineering Project
+<img width="1268" height="271" alt="image" src="https://github.com/user-attachments/assets/f5f6e1b0-2b2c-4ef4-9346-f77b470918c8" />
 
 This repository contains an automated pipeline that ingests RSS feeds from major Indian English news websites every 30 minutes betweem 10am to 10pm IST, lands them in a **data lake** (MinIO/S3) using **Bronze → Silver → Gold** layers, enriches them with **sentiment analysis (FinBERT)**, and then loads curated data into **PostgreSQL** for **Metabase** dashboards.
 
@@ -356,4 +357,5 @@ PY
 ## License / data usage
 
 This project consumes publicly available RSS feeds for educational purposes. Review each source’s terms of use before redistribution.
+
 
